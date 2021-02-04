@@ -15,6 +15,7 @@ cc1 = codf27(c1);
 cc2 = codf27(c2);
 cc3 = codf27(c3);
 
+\\ le polynôme x^40+x+u, inversé
 pol = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 1,u];
 \\print(#cc, " ", #pol);
 print("#cc=", #cc);
@@ -22,6 +23,7 @@ print("cc=", cc);
 \\print(pol);
 
 
+\\ associe à un élément de F_{3^3} son nombre "sympathique": espace=0 -> 32, a=1 -> 0, ... z=u^25 -> 25
 dec_char(c) = {
 my(x);
 if(c== 0, x=32,
@@ -54,6 +56,7 @@ if(c== 2*u27^2 + 1, x=25, 0), 0), 0), 0), 0), 0), 0), 0), 0), 0), 0), 0), 0), 0)
 
 decf27(s) = Strchr(vector(#s, i, if(dec_char(s[i] )==32, 32, dec_char(s[i]) + 97 )));
 
+\\ calcule les n premiers termes d'un lfsr d'état initial u0 et polynôme feedback c
 linrec(u0, c, n) = {
   v = u0;
   print("v=", #v);
@@ -63,6 +66,7 @@ linrec(u0, c, n) = {
   v;
 }
 
+\\ fonction du cours, bien trop gourmand en mémoire
 linrec2(u0,c,n) = {
   if(type(c)=="t_POL",c=Vecrev(c));
   d = #c - 1;
@@ -71,5 +75,6 @@ linrec2(u0,c,n) = {
   for(k=d+1,n,  print("k=", k ," -> ", decf27(v));  v[k] = -sum(i=0,d-1,v[k-d+i]*c[i+1]));
   v;
 }
+
 \\print(decf27(cc1));
 linrec(cc, pol, 496561832237/40);
