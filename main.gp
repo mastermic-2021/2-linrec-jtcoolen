@@ -19,14 +19,33 @@ dec_char(c) = {
 
 decf27(s) = Strchr(vector(#s, i, dec_char(s[i])));
 
+fast_exp(m, n) =  {
+	if (n == 0, m);
+	acc = matid(matsize(m)[1]);
+	while (n > 1,
+		if (n%2 == 0, m=m ^2; n = n / 2, acc=m*acc; m = m^2;n = (n - 1) / 2;
+		);
+	);
+	acc = m * acc;
+	acc;
+};
+
+
 \\ calcule les n premiers termes d'un lfsr d'état initial u0 et polynôme feedback c
 linrec(u0, c, n) = {
   v = u0;
   if(type(c)=="t_POL",c=Vecrev(c));
   print("k=0 -> " , decf27(v));
-  for(k=1,n, if(k%41==0,print("k=", k ," -> ", decf27(v)),); s = -sum(i=1,#u0,v[i]*c[i]); for(i=1,#u0-1, v[i]=v[i+1]); v[#u0] = s;);
-  v;
+\\  for(k=1,n, if(k%41==0,print("k=", k ," -> ", decf27(v)),); s = -sum(i=1,#u0,v[i]*c[i]); for(i=1,#u0-1, v[i]=v[i+1]); v[#u0] = s;);
+  for(k=1,n, s = -sum(i=1,#u0,v[i]*c[i]); for(i=1,#u0-1, v[i]=v[i+1]); v[#u0] = s;);
+  print(decf27(v));
 }
 
 \\print(decf27( Mod(x, x^40 +x + u27)^n * cc2));
-linrec(cc, x^40+x+u27, 2^40-1);
+\\linrec(cc, x^40+x+u27, ;;2^40-1);
+m=matrix(40,40,i,j,if(j==i+1,1,0));
+m[40,1]=-u27;
+m[40,2]=-1;
+
+m=m^(-1);
+print(decf27(fast_exp(m, n) * cc~));
